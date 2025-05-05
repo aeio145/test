@@ -1,0 +1,56 @@
+% The main.m script executes everything. First it runs initiate.m
+That script checks if the necessary files exist, stops the code if they
+are not in the folder.
+
+Next it checks for a Results folder and creates one if it's not there
+This ends initiate.m
+
+Next main.m runs the script import.csv
+
+This script reads 3 files and stores them in the matlab workspace.
+
+First is the parameters.txt. This file is for parameters to run the matlab
+scripts (0 or 1) To quickly change the behaviour of the code. I have it set
+with an example of a boolean called "save". If set to one, the plot will be
+saved to the results folder. If set to 0 it won't.
+
+The number of variables can be changed, right now it's only an example.
+
+values.csv contains Initial values or variables such as conductivity, Thot,
+... New Variables can be added but this should be done in the 
+simulation code in c
+
+data.csv contains all the results from the simulation. First line is the 
+variable next are the values
+
+Finally I  made an example plot
+
+
+%%EXAMPLE1 data.csv
+
+Heatflux,Position,Temp
+25,165,55
+30,175,70
+22,180,68
+
+
+%%EXAMPLE2 data.csv new variable
+
+Heatflux,Position,Temp,val
+25,165,55,0
+30,175,70,1
+22,180,68,0
+
+
+%%EXAMPLE3 
+%parameters.csv
+bool1,bool2,save
+0,0,1
+%values.csv
+Thot,Tcold,k,ro,alpha
+50,20,3.2,19.3,0.02
+%data.csv
+Heatflux,Position,Temp
+25,165,55
+30,175,70
+22,180,68
