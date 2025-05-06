@@ -3,7 +3,7 @@
 #include <stdlib.h>// Needed for exit()
 #include <stdarg.h>
 #include <ctype.h>
-#include <string.h>
+#include <string.h>//fordefine materila, too tedious to change physical values all the time
 
 // Function implementations
 
@@ -119,12 +119,12 @@ void definematerial(const char *material, double *k, double *ro, double *cp, dou
 // Test Staging Area
 //##################################
 
-
+// Substitute AC_MAT with the stuff on the right
+#define AC_MAT(A, cols, i, j) A[(i) * (cols) + (j)]
 // Matrix multiplication function
 void matmul(double *C, double *A, double *B, int m, int n, int q) {
 
-// Substitute AC_MAT with the stuff on the right
-#define AC_MAT(A, cols, i, j) A[(i) * (cols) + (j)]
+
 
 
     for (int ii = 0; ii < m; ii++) {  // Iterate over rows of A

@@ -2,14 +2,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <time.h>//I use it to store runtime in the file
 
 #define N 100  // number of cells
 
 int main(){
 
+    // Measure time to run at beginning, to be used for amhdal parameters later
+    //Is this correct or should it be done with time in the terminal when executing whole script?
+    //ASK ARNAU
+
+    clock_t start, end;     
+    double cpu_time_used;
+    start = clock();  // Start time
+
     // Create and prepare files for data storage and further plots in Matlab
     createfile("values.csv");
-    writefileheader("values.csv", "T_hot", "T_cold", "k", "ro", "cp", "alpha", NULL);
+    writefileheader("values.csv", "T_hot", "T_cold", "k", "rho", "cp", "alpha", NULL);
     createfile("data.csv");
     writefileheader("data.csv", "Position", "T", "Heatflux", "val", NULL);
     //##################################
@@ -17,14 +26,14 @@ int main(){
     //##################################
 
     // Material properties of the fin
-    double k, ro, cp, alpha;
+    double k, rho, cp, alpha;
     // Select material and physical properties will be automatically retrieved "Aluminum", "Copper", "Gold", "Iron", "Steel".
-    definematerial("Aluminum", &k, &ro, &cp, &alpha);
+    definematerial("Aluminum", &k, &rho, &cp, &alpha);
     
     // Show the retrieved properties (Sanity CHeck)
     printf("Material Properties:\n");
     printf("k  = %.2f W/m·K\n", k);
-    printf("ro = %.2f kg/m³\n", ro);
+    printf("rho = %.2f kg/m³\n", rho);
     printf("cp = %.2f J/kg·K\n", cp);
     printf("alpha = %e m²/s\n", alpha);
     
@@ -115,6 +124,27 @@ int main(){
 
 
 
+    //testmatmul
+    int m, n, q;
+    //memory alocation  
+ double *A = (double *)malloc(m * n * sizeof(double));//these return the pointer (address) of each matrix as a double. The malloc allocates the required bytes for each matrix and returns their address (bytes in a double times total number of values within that matrix that are double) 
+ double *B = (double *)malloc(n * q * sizeof(double)); 
+ double *C = (double *)malloc(m * q * sizeof(double)); 
+  
+ if (A == NULL || B == NULL || C == NULL) { // If the memory of any of tthem is NULL, exit program 
+     printf("Memory allocation failed!\n"); 
+     return 1;//This exits the main, the value helps id the issue but could also be exit(1); return0 means success, return 1 or return -1 return n indicates failure and the meaning with n 
+ }
+
+    // Initialize A and B with example values, can't understand why can't be directly declared with double A[] = {1, 2, 3, 4, 5, 6, 7, 8, 9}; 
+ double init_A[] = {1, 2, 3, 4, 5, 6, 7, 8, 9}; 
+ double init_B[] = {9, 5, 25, 6, 2, 4, 0, 2, 10}; 
+
+
+
+
+
+
 
 
 
@@ -142,6 +172,14 @@ int main(){
     //##################################
     //TESTING PROTOTYPE
     //##################################
+
+    // May be stored in values.csv?
+
+    end = clock();    // End time
+
+    cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+
+    printf("Elapsed time: %f seconds\n", cpu_time_used);
     
     
  
