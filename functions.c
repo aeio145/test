@@ -93,3 +93,32 @@ void definematerial(const char *material, double *k, double *rho, double *cp, do
     
     */
 
+void measure_time(double t0, MPI_Comm comm, double *avg_time) {
+    double t1 = MPI_Wtime();
+    double elapsed = t1 - t0;
+
+    double min_time, max_time, sum_time;
+    int rank, size;
+    MPI_Comm_rank(comm, &rank);
+    MPI_Comm_size(comm, &size);
+
+    MPI_Reduce(&elapsed, &min_time, 1, MPI_DOUBLE, MPI_MIN, 0, comm);
+    MPI_Reduce(&elapsed, &max_time, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+    MPI_Reduce(&elapsed, &sum_time, 1, MPI_DOUBLE, MPI_SUM, 0, comm);
+
+    if (rank == 0) {
+        *avg_time = sum_time / size;
+        printf("Min time: %.6f\n", min_time);
+        printf("Max time: %.6f\n", max_time);
+        printf("Avg time: %.6f\n", *avg_time);
+    }
+}
+
+void write_values_csv(double T_hot, double T_cold, double k, double rho, double cp, double alpha, double h, double L, int N, double tol, int max_iter, int size, double avg_time) {
+    FILE *fval = fopen("values.csv", "w");
+    if (!fval) { perror("values.csv"); MPI_Abort(MPI_COMM_WORLD, 1); }
+    fprintf(fval, "T_hot,T_cold,k,rho,cp,alpha,h,L,N,tol,max_iter,size,avg_time\n");
+    fprintf(fval, "%.2f,%.2f,%.2f,%.2f,%.2f,%.5e,%.2f,%.2f,%d,%.5e,%d,%d,%.6f\n",
+            T_hot, T_cold, k, rho, cp, alpha, h, L, N, tol, max_iter, size, avg_time);
+    fclose(fval);
+}
