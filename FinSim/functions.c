@@ -11,8 +11,8 @@
 
 // Exchange halo cells between neighboring MPI ranks
 void Halo_Update(double *T, int local_n, int rank, int size, MPI_Comm comm) {
-    MPI_Request reqs[4];
-    MPI_Status stats[4];
+    MPI_Request *reqs = malloc(4 * sizeof(MPI_Request));
+    MPI_Status *stats = malloc(4 * sizeof(MPI_Status));
     int req_cnt = 0;
 
     // Send leftmost actual to left neighbor, receive from right neighbor
@@ -29,6 +29,8 @@ void Halo_Update(double *T, int local_n, int rank, int size, MPI_Comm comm) {
     //medir tiempo?
     // Wait for all non-blocking ops to complete
     MPI_Waitall(req_cnt, reqs, stats);
+    free(reqs);
+    free(stats);
 }
 
 // BC UPdate
@@ -51,8 +53,8 @@ void BC_Update(double *T, int local_n, int rank, int size, double T_hot, double 
 void Initial_C(double *T, int local_n, int rank, double T_hot, double T_inf) {
     // Set starting temp to ambient temperature
     //i tried to make a linear interpolation instead, didn't work this is simpler and works
-    for (int i = 0; i < local_n+2; i++) {
-        T[i] = T_inf;
+    for (int i = 0; i < local_n+1; i++) {
+        T[i] = 0.5*(T_hot + T_inf);
     }
     //base ghost cell init (if rank 0)
     if (rank == 0) {

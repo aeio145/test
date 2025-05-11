@@ -23,8 +23,8 @@ int main(int argc, char *argv[]) {
     double T_cold = 25.0;   // ambient temperature [ºC]
     double h = 100.0;       // convective heat transfer coefficient [W/m^2*K]
     double L = 2.5;           //fin length [m]
-    int N = 100000;            // number of cells
-    double tol = 1e-6;      // convergence tolerance
+    int N = 10000;            // number of cells
+    double tol = 1e-4;      // convergence tolerance
     int max_iter = 1e8;  // max Jacobi iterations
 
     int rank, size;
@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
 
     //exdcute iterative solver (Jacobi!)
     Time_Loop(T_old, T_new, local_n, rank, size, dx, h, 2.0, T_cold, k, max_iter, tol, comm);
-
+    
     // Final boundary ghost update for tip convection using final T_old
     BC_Update(T_old, local_n, rank, size, T_hot, T_cold, h, dx, k);
 
